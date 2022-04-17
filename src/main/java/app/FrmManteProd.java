@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 
 public class FrmManteProd extends JFrame {
@@ -148,6 +149,14 @@ public class FrmManteProd extends JFrame {
 
 		contentPane.add(cboProveedores);
 		
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnBuscar.setBounds(324, 65, 89, 23);
+		contentPane.add(btnBuscar);
+		
 		llenaComboCategoria();
 		llenaComboProveedores();
 	}
@@ -171,8 +180,9 @@ public class FrmManteProd extends JFrame {
 		
 		
 		//Imprimir
+		cboProveedores.addItem("Seleccione");
 		for(Proveedor pro: listadoProveedores) {
-			cboProveedores.addItem(pro.getNombre_rs());
+			cboProveedores.addItem(pro.getIdprovedor() +"-"+ pro.getNombre_rs());
 		}
 		em.close();
 		
@@ -197,8 +207,9 @@ public class FrmManteProd extends JFrame {
 		
 		
 		//Imprimir
+		cboCategorias.addItem("Seleccione");
 		for(Categoria ca: listadoCategorias) {
-			cboCategorias.addItem(ca.getDescripcion());
+			cboCategorias.addItem(ca.getIdcategoria() +"-"+ ca.getDescripcion());
 		}
 		em.close();
 	}
@@ -231,10 +242,9 @@ public class FrmManteProd extends JFrame {
 			txtSalida.append("Descripcicon: " + p.getDes_prod() + "\n");
 			txtSalida.append("Stock       : " + Integer.toString(p.getStk_prod()) + "\n");
 			txtSalida.append("Precio      : " + Double.toString(p.getPre_prod()) + "\n");
-			txtSalida.append("Id Categoria: " +Integer.toString(p.getIdcategoria())+"\n");
-			txtSalida.append("Nombre Categoria: " + p.getCategoria().getDescripcion()+"\n");
+			txtSalida.append("Categoria   : " +Integer.toString(p.getIdcategoria())+" (" + p.getCategoria().getDescripcion()+")"+"\n");
 			txtSalida.append("Estado      : " +Integer.toString(p.getEst_prod())+"\n");
-			txtSalida.append("Id Proveedor: " +Integer.toString(p.getIdprovedor())+"\n\n");
+			txtSalida.append("Proveedor   : " +Integer.toString(p.getIdprovedor())+" ("+ p.getProvedor().getNombre_rs()+")"+"\n\n");
 	
 		}
 	
@@ -260,6 +270,8 @@ public class FrmManteProd extends JFrame {
 		pro.setStk_prod(stock);
 		pro.setPre_prod(precio);
 		pro.setIdcategoria(categoria);
+		pro.setEst_prod(estado);
+		pro.setIdprovedor(proveedor);
 		
 		//Grabar en la tabla --> JPA
 		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("mysql");
@@ -275,6 +287,38 @@ public class FrmManteProd extends JFrame {
 		//Cerrar mi manejador
 		em.close();
 		
+		JOptionPane.showMessageDialog(this, "Producto registrado");
 		
+	}
+	void buscar() {
+		//variables
+
+		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("mysql");
+		EntityManager em = fabrica.createEntityManager();
+
+		//proceso
+
+		em.getTransaction().begin();
+
+		Producto p = em.find(Producto.class, txtCódigo .getText());
+
+		
+		//Salida
+
+		txtDescripcion.setText(p.getDes_prod());
+
+		cboCategorias.setSelectedItem(p.getCategoria().getDescripcion());
+
+		txtPrecio.setText(Double.toString(p.getPre_prod()));
+
+		txtStock.setText(Integer.toString(p.getStk_prod()));
+
+		//cboProveedores.setSelectedItem(p.getProveedor.getNombreProveedor());
+
+		// confirmar la transaccion
+
+		em.getTransaction().commit();
+
+		em.close();	
 	}
 }

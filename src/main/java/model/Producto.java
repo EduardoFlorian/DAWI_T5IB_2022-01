@@ -22,6 +22,9 @@ public class Producto {
  	private Categoria categoria; //Para el listado join 
 	private int idcategoria; //Nos va servir para grabar un producto
 	private int est_prod;
+	@ManyToOne
+	@JoinColumn(name="idprovedor", insertable = false, updatable = false)
+	private Proveedor provedor;
 	private int idprovedor;
 	
 	
