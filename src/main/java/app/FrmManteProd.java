@@ -152,6 +152,7 @@ public class FrmManteProd extends JFrame {
 		JButton btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				buscar();
 			}
 		});
 		btnBuscar.setBounds(324, 65, 89, 23);
@@ -307,13 +308,13 @@ public class FrmManteProd extends JFrame {
 
 		txtDescripcion.setText(p.getDes_prod());
 
-		cboCategorias.setSelectedItem(p.getCategoria().getDescripcion());
+		cboCategorias.setSelectedIndex(p.getIdcategoria());
 
 		txtPrecio.setText(Double.toString(p.getPre_prod()));
 
 		txtStock.setText(Integer.toString(p.getStk_prod()));
 
-		//cboProveedores.setSelectedItem(p.getProveedor.getNombreProveedor());
+		cboProveedores.setSelectedIndex(p.getIdprovedor());
 
 		// confirmar la transaccion
 
